@@ -8,40 +8,15 @@ Subject project for Wireless Sensor Networks. Harsh Gupta (RA2311003010866), Deb
 
 ---
 
-## If you are writing the final report or presentation
+## Highlights
 
-Start with these two drafts, both built from the measured results:
+- **Simulated on emulated hardware:** real Contiki firmware running on Tmote Sky motes in Cooja, with moving vehicles.
+- **Redundant roadside network:** six paired gateways form a multi-hop RPL tree, so losing one doesn't disconnect the nodes behind it.
+- **Measured over 40 runs:** PDR of 84.9-99.4%, mean delay under 1.4 s, and recovery from a gateway failure in every failure run.
+- **Machine learning on real images:** YOLOv8s reaches mAP@50 of 0.93 on held-out pothole images.
+- **Repair prioritisation:** network reports and image detections are combined into a ranked list of repair sites.
 
-| File | What it is |
-|---|---|
-| [`deliverables/...-Updated.pptx`](deliverables/) | 9-slide deck, fully updated with real results |
-| [`deliverables/WSN_Pothole_Project_Report.pdf`](deliverables/WSN_Pothole_Project_Report.pdf) | 10-page report with a viva Q&A appendix |
-
-Then use this map to find the source material:
-
-| You need | Where it is |
-|---|---|
-| Topology, RPL cycle and recovery diagrams | `results/figures/` |
-| PDR, delay, timeline and power charts | `results/charts/` |
-| Cooja screenshots (before and after failure) | `results/screenshots/` |
-| Mean results for every configuration | `results/summary.csv` |
-| Results for each of the 40 runs | `results/per_run_metrics.csv` |
-| Raw Cooja logs | `results/raw/` |
-| YOLOv8 test metrics | `ml/output/test_metrics.json` |
-| Repair ranking | `ml/output/priority_ranking.csv` |
-| Example detection images | `ml/output/site*_detection.jpg` |
-
-### What the rubric needs
-
-| Requirement | Evidence |
-|---|---|
-| Network setup (Sky motes, sink and senders, UDGM, range, code loaded) | `simulation/pothole-demo-*.csc`, report section 3 |
-| Communication demo (Radio Messages, Log Listener) | Live demo, `results/screenshots/` |
-| Metrics interpreted (PDR, delay, power) | Report section 4, `results/charts/` |
-| Node failure, routing change, recovery | Live demo at 5:00, slides 6-7, report section 4.2 |
-| Topology diagram with justification | Slide 3 |
-| Routing selection table | Slide 4 |
-| With/without-failure table | Slide 7, report table 2 |
+Full write-ups are in [`deliverables/`](deliverables/): a [project report](deliverables/WSN_Pothole_Project_Report.pdf) and a presentation.
 
 ---
 
@@ -57,14 +32,14 @@ Then use this map to find the source material:
 
 **Data path:** vehicle → one-hop broadcast → nearest gateways → multi-hop RPL tree → sink → monitoring server. Dashcam images reach the server separately over 4G/Wi-Fi, where YOLOv8 runs.
 
-### Design decisions you will be asked about
+### Design decisions
 
 | Decision | Reason |
 |---|---|
-| **RPL, not AODV** (the original proposal used AODV) | The gateway backbone is static and all traffic goes to one sink, which is what RPL's tree is built for. Contiki 3.0's IPv6 stack has RPL but no AODV. |
+| **RPL, not AODV** | The gateway backbone is static and all traffic goes to one sink, which is what RPL's tree is built for. Contiki 3.0's IPv6 stack has RPL but no AODV. |
 | **Vehicles are not routers** | RPL handles moving routers badly. Contiki 3.0's leaf mode doesn't actually stop a node advertising routes (gateways really did pick moving vehicles as parents in testing), so RPL is compiled out of the vehicle firmware. |
-| **Six paired gateways, all wireless** (the original diagram had one, wired) | Cooja has no wired links, and one gateway means no alternate route, so a failure could not show recovery. |
-| **Images do not cross the WSN** | 802.15.4 frames carry at most 127 bytes. The original proposal fed YOLOv8 from vibration and GPS data, which it cannot use. |
+| **Six paired gateways, all wireless** | A single gateway would leave no alternate route, so one failure would cut off every node behind it. |
+| **Images do not cross the WSN** | 802.15.4 frames carry at most 127 bytes, while YOLOv8 needs full images that vibration and GPS reports can't provide. |
 
 ---
 
@@ -85,7 +60,7 @@ Then use this map to find the source material:
 
 - **PDR falls as vehicles increase** because vehicle broadcasts compete for the channel and have no acknowledgement or retransmission.
 - **Delay is highest with 2 vehicles**, which is consistent with gateways more often waiting for the 2 s batch timer when traffic is light.
-- **A gateway failure costs at most 1.4 PDR points**, which is within the variation between seeds at 4-8 vehicles. Don't present it as a clear measured loss.
+- **A gateway failure costs at most 1.4 PDR points**, which is within the variation between seeds at 4-8 vehicles, so it is not a statistically clear loss.
 - **All 20 failure runs recovered.** The children of the removed gateway chose a new parent.
 
 **Power and estimated lifetime (2 x AA, 2500 mAh):** vehicles 2.06-2.33 mW (134-152 days); gateways 1.97-3.03 mW (103-159 days); the sink about 60 mW, assumed mains powered.
@@ -112,13 +87,11 @@ The server clusters reports from an 8-vehicle run by road position and scores ea
 
 ---
 
-## Limits to state honestly
-
-Please keep these in the final report, because the examiner may ask:
+## Limitations
 
 - **Vibration and GPS are synthetic.** Cooja has no road or GPS. The sampling, detection, networking and routing code does run on emulated Sky motes.
 - **The ranking uses assumed inputs:** which image belongs to which site, and the traffic and road-importance values, are illustrative.
-- **AODV was not simulated.** The comparison is qualitative, so don't claim RPL measured better.
+- **AODV was not simulated.** The comparison is qualitative, so no measured advantage is claimed.
 - **Battery lifetime is calculated** from duty cycle and Sky current figures, not measured.
 - **UDGM is an idealised radio model** (50 m range, 90% receive success).
 
@@ -190,7 +163,7 @@ python analysis/make_figures.py   # slide diagrams
 python analysis/make_report.py    # report PDF
 ```
 
-`ml/train_yolo.py`, `ml/evaluate.py`, `ml/priority.py` and `analysis/update_ppt.py` have paths from the original laptop near the top of each file, so change those first. `update_ppt.py` also needs the original deck, which isn't in this repo, so edit `deliverables/` directly instead.
+`ml/train_yolo.py`, `ml/evaluate.py`, `ml/priority.py` and `analysis/update_ppt.py` have paths from the original laptop near the top of each file, so change those first. `update_ppt.py` also needs the original deck, which isn't in this repo.
 
 ## Repository layout
 
