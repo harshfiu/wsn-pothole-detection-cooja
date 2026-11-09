@@ -1,0 +1,10 @@
+* text=auto
+*.sh text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+Makefile text eol=lf
+*.csc text eol=lf
+*.bat text eol=crlf
+*.pt binary
+*.pptx binary
+*.pdf binary

@@ -1,0 +1,6 @@
+rank,site,position_m,segment,reports,vehicles,median_peak_mg,wsn_severity,yolo_confidence,box_area_pct,yolo_size,priority_score,image
+1,2,47.9,Market road,264,8,1851,High,0.92,1.3,Small,75.7,Typical-pothole-images-on-road-surfaces-of-the-testing-subset_png_jpg.rf.1a06565d764de11fb1a07d7e5251578f.jpg
+2,4,102.9,Residential,229,8,1836,High,0.79,16.9,Large,74.5,images107_jpg.rf.14dcefbde57a0b11e24b135a492b3436.jpg
+3,3,77.0,Market road,82,8,617,Low,0.97,5.8,Medium,65.9,file76ygewan406696193rz-1567618964_jpg.rf.7f23626dd46fe2db922bae68f09d01ee.jpg
+4,5,125.0,Residential,77,8,1185,Medium,0.91,15.0,Large,65.9,images136_jpg.rf.4b5a6ed4e00c28c59efc5e3bfbc819d6.jpg
+5,1,21.0,School zone,169,8,1181,Medium,0.96,0.8,Small,64.6,Bengaluru_potholes_ZainabTNM_1200_09062022-compressed_jpg.rf.38fc8cb2e13a2f747d5c7c0ca33a4044.jpg

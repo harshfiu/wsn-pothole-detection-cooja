@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+obj_*/
+*.sky
+*.a
+contiki-*.map
+Makefile.target
+symbols.c
+symbols.h
+COOJA.log
+~$*
